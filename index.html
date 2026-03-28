@@ -1,0 +1,364 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#38BDF8",
+              "on-primary": "#ffffff",
+              "primary-container": "#e0f2fe",
+              "on-primary-container": "#0369a1",
+              secondary: "#904800",
+              "on-secondary": "#ffffff",
+              tertiary: "#006a34",
+              "on-tertiary": "#ffffff",
+              "tertiary-container": "#6dfe9c",
+              "on-tertiary-container": "#005f2e",
+              background: "#f1f7ff",
+              "on-background": "#04324c",
+              surface: "#f1f7ff",
+              "on-surface": "#04324c",
+              "surface-variant": "#c0e1ff",
+              "on-surface-variant": "#3b5f7c",
+              outline: "#577a99",
+              "outline-variant": "#8db1d1",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#e7f2ff",
+              "surface-container": "#d7eaff",
+              "surface-container-high": "#cce5ff",
+              "surface-container-highest": "#c0e1ff",
+            },
+            fontFamily: {
+              headline: ["Plus Jakarta Sans"],
+              body: ["Be Vietnam Pro"],
+              label: ["Plus Jakarta Sans"],
+            },
+            borderRadius: {
+              DEFAULT: "9999px",
+              lg: "2rem",
+              xl: "3rem",
+              full: "9999px",
+            },
+            animation: {
+              shake: "shake 0.5s cubic-bezier(.36,.07,.19,.97) both",
+              "pop-in": "pop-in 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48) both",
+            },
+            keyframes: {
+              shake: {
+                "10%, 90%": { transform: "translate3d(-1px, 0, 0)" },
+                "20%, 80%": { transform: "translate3d(2px, 0, 0)" },
+                "30%, 50%, 70%": { transform: "translate3d(-4px, 0, 0)" },
+                "40%, 60%": { transform: "translate3d(4px, 0, 0)" },
+              },
+              "pop-in": {
+                "0%": {
+                  opacity: "0",
+                  transform: "scale(0.8) translateY(20px)",
+                },
+                "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="input.css" />
+  </head>
+  <body
+    class="bg-background font-body text-on-background min-h-screen flex flex-col"
+  >
+    <!-- TopAppBar -->
+    <header class="bg-blue-50/80 backdrop-blur-md sticky top-0 w-full z-50">
+      <div
+        class="flex justify-between items-center w-full px-6 py-4 max-w-screen-xl mx-auto"
+      >
+        <div
+          class="text-2xl font-black bg-gradient-to-r from-primary to-sky-400 bg-clip-text text-transparent"
+        >
+          Rock Paper Scissors
+        </div>
+        <nav class="hidden md:flex gap-8 items-center">
+          <a
+            class="text-primary font-extrabold hover:scale-105 transition-transform duration-300"
+            href="#"
+            >Play</a
+          >
+          <a
+            class="text-slate-500 font-medium hover:scale-105 transition-transform duration-300"
+            href="#"
+            >Stats</a
+          >
+          <a
+            class="text-slate-500 font-medium hover:scale-105 transition-transform duration-300"
+            href="#"
+            >Rules</a
+          >
+        </nav>
+        <div class="flex items-center gap-4">
+          <button
+            class="material-symbols-outlined text-primary hover:scale-105 transition-transform duration-300"
+          >
+            leaderboard
+          </button>
+          <button
+            class="material-symbols-outlined text-primary hover:scale-105 transition-transform duration-300"
+          >
+            settings
+          </button>
+        </div>
+      </div>
+    </header>
+    <main class="flex-1 max-w-6xl mx-auto w-full px-6 pt-12 pb-32">
+      <!-- Dashboard / Game Arena -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <!-- Sidebar Stats -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          <!-- Score Card -->
+          <div
+            class="bg-surface-container-low rounded-xl p-8 flex flex-col gap-4 border border-outline-variant/30"
+          >
+            <span
+              class="text-secondary font-headline font-bold text-sm tracking-widest uppercase"
+              >Live Scoreboard</span
+            >
+            <div class="flex justify-between items-end">
+              <div class="flex flex-col">
+                <span class="text-on-surface-variant font-label text-xs"
+                  >YOU</span
+                >
+                <span
+                  class="text-5xl font-headline font-black text-primary"
+                  id="player-score"
+                  >0</span
+                >
+              </div>
+              <div class="h-12 w-[2px] bg-outline-variant/20 mb-2"></div>
+              <div class="flex flex-col items-end">
+                <span class="text-on-surface-variant font-label text-xs"
+                  >CPU</span
+                >
+                <span
+                  class="text-5xl font-headline font-black text-secondary"
+                  id="cpu-score"
+                  >0</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Last Move Card -->
+          <div
+            class="bg-surface-container rounded-xl p-8 relative overflow-hidden group border border-outline-variant/30"
+            id="computerChoice"
+          >
+            <div class="relative z-10">
+              <span
+                class="text-primary font-headline font-bold text-sm tracking-widest uppercase"
+                >CPU Choice</span
+              >
+              <div class="mt-4 flex items-center gap-4">
+                <div
+                  class="w-12 h-12 bg-surface-container-lowest rounded-full flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary transition-all duration-500 value-icon"
+                    >question_mark</span
+                  >
+                </div>
+                <span class="text-on-surface font-semibold value">—</span>
+              </div>
+            </div>
+            <div
+              class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700"
+            >
+              <span class="material-symbols-outlined text-9xl">history</span>
+            </div>
+          </div>
+        </div>
+        <!-- Main Play Area -->
+        <div class="lg:col-span-8 space-y-10">
+          <!-- Header Section -->
+          <div class="space-y-2">
+            <h1
+              class="text-display-sm md:text-5xl font-headline font-extrabold text-on-surface tracking-tight"
+            >
+              Make your move.
+            </h1>
+            <p class="text-on-surface-variant text-lg">
+              Choose your weapon and challenge the machine.
+            </p>
+          </div>
+          <!-- Choice Selection Grid -->
+          <form class="grid grid-cols-1 md:grid-cols-3 gap-8" id="game-form">
+            <!-- Rock -->
+            <label class="weapon-card cursor-pointer">
+              <input name="choice" type="radio" value="Rock" />
+              <div
+                class="card-content bg-surface-container-highest rounded-xl p-10 flex flex-col items-center gap-6 transition-all duration-300 border-4 border-transparent hover:scale-105 active:scale-95"
+              >
+                <div
+                  class="w-24 h-24 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-5xl text-primary"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >diamond</span
+                  >
+                </div>
+                <span class="font-headline font-bold text-xl text-on-surface"
+                  >Rock</span
+                >
+              </div>
+            </label>
+            <!-- Paper -->
+            <label class="weapon-card cursor-pointer">
+              <input name="choice" type="radio" value="Paper" />
+              <div
+                class="card-content bg-surface-container-highest rounded-xl p-10 flex flex-col items-center gap-6 transition-all duration-300 border-4 border-transparent hover:scale-105 active:scale-95"
+              >
+                <div
+                  class="w-24 h-24 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-5xl text-primary"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >front_hand</span
+                  >
+                </div>
+                <span class="font-headline font-bold text-xl text-on-surface"
+                  >Paper</span
+                >
+              </div>
+            </label>
+            <!-- Scissors -->
+            <label class="weapon-card cursor-pointer">
+              <input name="choice" type="radio" value="Scissor" />
+              <div
+                class="card-content bg-surface-container-highest rounded-xl p-10 flex flex-col items-center gap-6 transition-all duration-300 border-4 border-transparent hover:scale-105 active:scale-95"
+              >
+                <div
+                  class="w-24 h-24 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-5xl text-primary"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >content_cut</span
+                  >
+                </div>
+                <span class="font-headline font-bold text-xl text-on-surface"
+                  >Scissors</span
+                >
+              </div>
+            </label>
+          </form>
+          <!-- Action Bar -->
+          <div
+            class="bg-surface-container-low rounded-full p-4 flex items-center justify-between gap-4 border border-outline-variant/20 shadow-sm"
+          >
+            <button
+              class="px-8 py-4 text-primary font-bold hover:underline transition-all"
+              id="reset_button"
+            >
+              Reset Session
+            </button>
+            <button
+              class="bg-gradient-to-r from-primary to-sky-400 text-on-primary px-12 py-4 rounded-full font-headline font-bold text-lg shadow-lg hover:scale-105 active:scale-95 transition-all bounce-effect"
+              id="sub_button"
+            >
+              SUBMIT MOVE
+            </button>
+          </div>
+          <!-- Result Area -->
+          <div
+            class="hidden relative overflow-hidden rounded-xl bg-surface-container-lowest p-1 shadow-xl animate-pop-in"
+            id="result-section"
+          >
+            <div
+              class="bg-surface-container-lowest rounded-lg p-10 flex flex-col md:flex-row items-center justify-between gap-8"
+            >
+              <div class="space-y-4 text-center md:text-left">
+                <div
+                  class="inline-flex items-center gap-2 px-4 py-1 rounded-full font-label font-bold text-xs uppercase tracking-widest"
+                  id="badge"
+                >
+                  Round Result
+                </div>
+                <h2
+                  class="text-6xl font-headline font-black text-on-surface uppercase"
+                  id="result"
+                >
+                  Result Here
+                </h2>
+                <p class="text-on-surface-variant text-xl">
+                  Computer chose:
+                  <span class="font-bold text-primary" id="cpu-reveal">—</span>
+                </p>
+              </div>
+              <div class="relative flex items-center justify-center w-48 h-48">
+                <div
+                  class="absolute inset-0 rounded-full"
+                  id="result-icon-bg"
+                ></div>
+                <span
+                  class="material-symbols-outlined text-8xl"
+                  id="result-icon"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >celebration</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav
+      class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 backdrop-blur-xl z-50 rounded-t-[3rem] shadow-[0_-8px_32px_rgba(4,50,76,0.06)]"
+    >
+      <button
+        class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-full px-6 py-2 scale-110 transition-all"
+      >
+        <span class="material-symbols-outlined">sports_esports</span>
+        <span class="font-headline font-semibold text-[10px] tracking-tight"
+          >Play</span
+        >
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-slate-400 px-4 py-2 hover:text-primary transition-colors"
+      >
+        <span class="material-symbols-outlined">analytics</span>
+        <span class="font-headline font-semibold text-[10px] tracking-tight"
+          >Stats</span
+        >
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-slate-400 px-4 py-2 hover:text-primary transition-colors"
+      >
+        <span class="material-symbols-outlined">menu_book</span>
+        <span class="font-headline font-semibold text-[10px] tracking-tight"
+          >Rules</span
+        >
+      </button>
+    </nav>
+    <button
+      class="fixed right-6 bottom-24 md:bottom-12 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40"
+    >
+      <span class="material-symbols-outlined text-3xl">help</span>
+    </button>
+    <script type="text/javascript" src="script.js"></script>
+  </body>
+</html>
